@@ -1,0 +1,14 @@
+# dependencies and build output (dist/ is built by `npm run build` and deployed by
+# .github/workflows/pages.yml; it is never committed)
+node_modules/
+dist/
+
+# machine-local files: test audio, local tool and editor settings, OS
+.local/
+.vscode/
+.idea/
+.env
+.env.*
+.DS_Store
+Thumbs.db
+*.log

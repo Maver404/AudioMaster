@@ -1,0 +1,29 @@
+{
+  "name": "audiomaster",
+  "version": "0.1.0",
+  "description": "Browser-based one-click mastering for AI-generated songs (Suno): cleanup, EQ, dynamics, true-peak limiting to streaming loudness targets.",
+  "keywords": [
+    "mastering",
+    "audio",
+    "suno",
+    "loudness",
+    "lufs",
+    "web-audio",
+    "browser"
+  ],
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "node tools/serve.mjs",
+    "build": "node tools/build.mjs",
+    "test": "node tests/run.mjs",
+    "fixtures": "node tools/make-fixtures.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  },
+  "license": "MIT"
+}

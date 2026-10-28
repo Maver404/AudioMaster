@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>AudioMaster</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../src/ui/styles.css">
+<style>
+  /* Harness-only toolbar (fake engine controls). Not part of the app. */
+  .hx {
+    position: fixed;
+    left: max(10px, env(safe-area-inset-left, 0px));
+    bottom: max(10px, env(safe-area-inset-bottom, 0px));
+    z-index: 60;
+    font: 11px/1.3 var(--font-mono);
+    color: var(--fg-2);
+    background: var(--surface-2);
+    border: 1px dashed var(--line-strong);
+    border-radius: 4px;
+    max-width: calc(100vw - 20px);
+  }
+  .hx summary { cursor: pointer; padding: 5px 9px; list-style: none; }
+  .hx summary::-webkit-details-marker { display: none; }
+  .hx-body { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 8px 8px; max-width: 520px; }
+  .hx-body button { font: inherit; color: var(--fg); background: var(--surface-3); border: 1px solid var(--line); border-radius: 3px; padding: 3px 7px; cursor: pointer; }
+  .hx-body button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+  .hx-body span { align-self: center; padding: 0 2px 0 6px; color: var(--fg-3); }
+  /* ?check=1 results */
+  .hx-out { position: fixed; top: 8px; right: 8px; z-index: 70; max-width: min(560px, calc(100vw - 16px)); max-height: 60vh; overflow: auto; margin: 0; padding: 8px 10px; font: 11px/1.4 var(--font-mono); color: var(--fg); background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: 4px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<div id="app" class="am-root"></div>
+<details class="hx" id="hx">
+  <summary>HARNESS · fake engine</summary>
+  <div class="hx-body">
+    <span>theme</span>
+    <button type="button" data-theme-set="">system</button>
+    <button type="button" data-theme-set="light">light</button>
+    <button type="button" data-theme-set="dark">dark</button>
+    <span>speed</span>
+    <button type="button" data-speed="1">normal</button>
+    <button type="button" data-speed="4">slow</button>
+    <span>save</span>
+    <button type="button" data-save="saved">browser</button>
+    <button type="button" data-save="host">host (zip)</button>
+    <button type="button" data-save="declined">declined</button>
+    <button type="button" data-save="busy">busy</button>
+    <button type="button" data-save="too_large">too large</button>
+    <button type="button" data-save="unavailable">unavailable</button>
+    <span>load</span>
+    <button type="button" id="hx-tracks">3 brani</button>
+    <button type="button" id="hx-corrupt">file corrotto</button>
+    <button type="button" id="hx-unsupported">.txt</button>
+    <button type="button" id="hx-renderfail">render error</button>
+  </div>
+</details>
+<script type="module" src="ui-harness.js"></script>
+</body>
+</html>
