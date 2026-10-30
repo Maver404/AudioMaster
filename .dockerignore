@@ -1,0 +1,10 @@
+# Only what the Dockerfile copies; everything else stays out of the build context.
+*
+!package.json
+!package-lock.json
+!index.html
+!src/
+!tools/
+!docker/nginx.conf
+**/.DS_Store
+**/*.log

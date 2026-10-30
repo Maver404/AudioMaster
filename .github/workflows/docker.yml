@@ -1,0 +1,38 @@
+# Build the Docker image and smoke-test it with the hardening of compose.yaml (read-only
+# filesystem, no capabilities). Nothing is pushed to a registry.
+name: Docker image
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: docker build -t audiomaster:ci .
+      - name: Smoke test
+        run: |
+          docker run -d --name am -p 8080:8080 --read-only --tmpfs /tmp --cap-drop ALL \
+            --security-opt no-new-privileges audiomaster:ci
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8080/ -o page.html && break; sleep 1; done
+          grep -q '<title>AudioMaster</title>' page.html
+          grep -q '__AM_WORKER_URL__' page.html
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/src/main.js)" = 404
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/index.html)" = 200
+          # GET, not HEAD: nginx does not gzip header-only responses
+          curl -s -D headers.txt -o /dev/null -H 'Accept-Encoding: gzip' http://127.0.0.1:8080/
+          grep -qi '^content-encoding: gzip' headers.txt
+          grep -qi '^vary: accept-encoding' headers.txt
+          grep -qi '^x-content-type-options: nosniff' headers.txt
+          docker exec am wget -q -O /dev/null http://127.0.0.1:8080/
+      - name: Container logs
+        if: always()
+        run: docker logs am || true

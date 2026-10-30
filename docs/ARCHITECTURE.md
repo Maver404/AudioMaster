@@ -96,6 +96,8 @@ tests/helpers.mjs             assert helpers, signal generators, ffmpeg bridge
 tests/*.test.mjs              unit/integration tests
 tools/build.mjs               esbuild → dist/index.html (standalone; --embed-adapter adds dist/embed.html)
 docs/                         ARCHITECTURE.md, RESEARCH.md
+Dockerfile, docker/nginx.conf  container: Node builds dist/index.html, unprivileged nginx serves it on :8080
+compose.yaml                  the same, read-only, no capabilities (CI smoke test: .github/workflows/docker.yml)
 ```
 
 ---------------------------------------------------------------------------------

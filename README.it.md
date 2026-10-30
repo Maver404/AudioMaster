@@ -75,6 +75,23 @@ npm run build      # → dist/index.html, un unico file che funziona anche apert
 
 `dist/` non va nel repository: si ricrea sempre con `npm run build`.
 
+## Avvio con Docker
+
+L'immagine costruisce l'app e la serve con nginx sulla porta 8080 (sul computer non serve
+Node). I brani vengono comunque elaborati nel browser: al container non arriva nessun file.
+
+```bash
+docker build -t audiomaster .
+docker run --rm -p 8080:8080 audiomaster   # → http://localhost:8080
+```
+
+Oppure con Compose, che a ogni avvio lo ricostruisce dai sorgenti attuali e lo esegue in
+sola lettura, senza privilegi aggiuntivi:
+
+```bash
+docker compose up -d                       # → http://localhost:8080
+```
+
 ## Pubblicare su GitHub Pages
 
 Il workflow [.github/workflows/pages.yml](.github/workflows/pages.yml) esegue

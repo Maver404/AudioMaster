@@ -76,6 +76,23 @@ npm run build      # → dist/index.html, one file that also works opened from d
 
 `dist/` is not committed: it is always rebuilt with `npm run build`.
 
+## Run it with Docker
+
+The image builds the app and serves it with nginx on port 8080 (no Node needed on the
+host). Songs are still processed in the browser: nothing is uploaded to the container.
+
+```bash
+docker build -t audiomaster .
+docker run --rm -p 8080:8080 audiomaster   # → http://localhost:8080
+```
+
+Or with Compose, which rebuilds it from the current sources at every start and runs it
+read-only, without extra privileges:
+
+```bash
+docker compose up -d                       # → http://localhost:8080
+```
+
 ## Publish on GitHub Pages
 
 The workflow [.github/workflows/pages.yml](.github/workflows/pages.yml) runs
