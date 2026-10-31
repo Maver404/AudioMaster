@@ -57,7 +57,8 @@ jobs:
           docker compose build 2>&1 | tee compose-build.log
           grep -q 'bake definitions' compose-build.log # the build really went through bake
           docker compose up -d --wait --wait-timeout 120
-          curl -fsS http://127.0.0.1:8080/ | grep -q '<title>AudioMaster</title>'
+          curl -fsS http://127.0.0.1:8080/ -o page.html # not piped: grep -q would cut curl off
+          grep -q '<title>AudioMaster</title>' page.html
           docker compose down
       - name: Container logs
         if: always()
@@ -101,5 +102,6 @@ jobs:
           mkdir server && cp compose.yaml server/ && cd server
           docker compose pull
           docker compose up -d --wait --wait-timeout 120
-          curl -fsS http://127.0.0.1:8080/ | grep -q '<title>AudioMaster</title>'
+          curl -fsS http://127.0.0.1:8080/ -o page.html # not piped: grep -q would cut curl off
+          grep -q '<title>AudioMaster</title>' page.html
           docker compose down
