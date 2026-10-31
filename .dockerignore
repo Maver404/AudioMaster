@@ -1,5 +1,9 @@
-# Only what the Dockerfile copies; everything else stays out of the build context.
+# Only what the build needs; everything else stays out of the build context.
+# The Dockerfile must stay in: `docker compose` builds through bake, which applies these
+# rules to the Dockerfile too ("failed to read dockerfile" otherwise).
 *
+!Dockerfile
+!.dockerignore
 !package.json
 !package-lock.json
 !index.html

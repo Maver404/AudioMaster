@@ -33,6 +33,16 @@ jobs:
           grep -qi '^vary: accept-encoding' headers.txt
           grep -qi '^x-content-type-options: nosniff' headers.txt
           docker exec am wget -q -O /dev/null http://127.0.0.1:8080/
+          docker stop am
+      - name: Compose (built through bake, as recent Docker Compose does)
+        env:
+          COMPOSE_BAKE: 'true'
+        run: |
+          docker compose up -d --wait --wait-timeout 120
+          curl -fsS http://127.0.0.1:8080/ | grep -q '<title>AudioMaster</title>'
+          docker compose down
       - name: Container logs
         if: always()
-        run: docker logs am || true
+        run: |
+          docker logs am || true
+          docker compose logs || true
