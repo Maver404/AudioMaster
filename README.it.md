@@ -78,12 +78,12 @@ npm run build      # → dist/index.html, un unico file che funziona anche apert
 ## Avvio con Docker
 
 Un'immagine pronta è pubblicata su `ghcr.io/maver404/audiomaster` (amd64 e arm64): nginx
-serve l'app sulla porta 8080. I brani vengono comunque elaborati nel browser, al
-container non arriva nessun file. Serve solo [compose.yaml](compose.yaml): mettilo in una
-cartella e lancia
+serve l'app sulla porta 8080 dentro il container, pubblicata sulla porta 8081. I brani
+vengono comunque elaborati nel browser, al container non arriva nessun file. Serve solo
+[compose.yaml](compose.yaml): mettilo in una cartella e lancia
 
 ```bash
-docker compose up -d                       # → http://localhost:8080
+docker compose up -d                       # → http://localhost:8081
 ```
 
 Gira in sola lettura e senza privilegi aggiuntivi. Per aggiornare all'ultima versione:
@@ -92,16 +92,17 @@ Gira in sola lettura e senza privilegi aggiuntivi. Per aggiornare all'ultima ver
 docker compose pull && docker compose up -d
 ```
 
-Senza Compose: `docker run -d -p 8080:8080 --restart unless-stopped ghcr.io/maver404/audiomaster`.
+Senza Compose: `docker run -d -p 8081:8080 --restart unless-stopped ghcr.io/maver404/audiomaster`.
+Per usare un'altra porta sull'host cambia il primo numero (`"8081:8080"`) in compose.yaml.
 
-**Dietro Caddy (o un altro reverse proxy).** Fai puntare il proxy alla porta 8080 del
-container; HTTPS, dominio e certificati restano a Caddy. Se Caddy gira sullo stesso
-host, pubblica la porta solo in locale (`ports: ["127.0.0.1:8080:8080"]` in compose.yaml)
+**Dietro Caddy (o un altro reverse proxy).** Fai puntare il proxy alla porta 8081
+dell'host (8080 dentro la rete di Docker); HTTPS, dominio e certificati restano a Caddy. Se Caddy gira sullo stesso
+host, pubblica la porta solo in locale (`ports: ["127.0.0.1:8081:8080"]` in compose.yaml)
 e aggiungi al Caddyfile:
 
 ```
 audiomaster.example.com {
-    reverse_proxy 127.0.0.1:8080
+    reverse_proxy 127.0.0.1:8081
 }
 ```
 

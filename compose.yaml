@@ -1,5 +1,5 @@
 # Only this file is needed: the image is built and published by GitHub Actions.
-#   docker compose up -d                          → http://localhost:8080
+#   docker compose up -d                          → http://localhost:8081
 #   docker compose pull && docker compose up -d   (update to the latest version)
 # To build from the sources instead, in a checkout:
 #   docker compose -f compose.yaml -f compose.build.yaml up -d
@@ -7,7 +7,7 @@ services:
   audiomaster:
     image: ghcr.io/maver404/audiomaster:latest
     ports:
-      - "8080:8080"
+      - "8081:8080" # host port 8081 → nginx on 8080 inside the container
     restart: unless-stopped
     # Static page only: read-only filesystem (nginx writes just its pid and temp files
     # in /tmp), no capabilities, no privilege escalation.
