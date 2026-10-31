@@ -4,7 +4,7 @@
 # the container: songs are processed in the visitor's browser.
 #   docker build -t audiomaster .
 #   docker run --rm -p 8080:8080 audiomaster      → http://localhost:8080
-# or: docker compose up -d (compose.yaml)
+# Published by .github/workflows/docker.yml as ghcr.io/maver404/audiomaster (compose.yaml).
 
 # The page is the same on every architecture: build it natively, even in multi-arch builds.
 FROM --platform=$BUILDPLATFORM node:22-alpine AS build

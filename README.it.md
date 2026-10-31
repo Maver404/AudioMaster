@@ -77,19 +77,41 @@ npm run build      # → dist/index.html, un unico file che funziona anche apert
 
 ## Avvio con Docker
 
-L'immagine costruisce l'app e la serve con nginx sulla porta 8080 (sul computer non serve
-Node). I brani vengono comunque elaborati nel browser: al container non arriva nessun file.
-
-```bash
-docker build -t audiomaster .
-docker run --rm -p 8080:8080 audiomaster   # → http://localhost:8080
-```
-
-Oppure con Compose, che a ogni avvio lo ricostruisce dai sorgenti attuali e lo esegue in
-sola lettura, senza privilegi aggiuntivi:
+Un'immagine pronta è pubblicata su `ghcr.io/maver404/audiomaster` (amd64 e arm64): nginx
+serve l'app sulla porta 8080. I brani vengono comunque elaborati nel browser, al
+container non arriva nessun file. Serve solo [compose.yaml](compose.yaml): mettilo in una
+cartella e lancia
 
 ```bash
 docker compose up -d                       # → http://localhost:8080
+```
+
+Gira in sola lettura e senza privilegi aggiuntivi. Per aggiornare all'ultima versione:
+
+```bash
+docker compose pull && docker compose up -d
+```
+
+Senza Compose: `docker run -d -p 8080:8080 --restart unless-stopped ghcr.io/maver404/audiomaster`.
+
+**Dietro Caddy (o un altro reverse proxy).** Fai puntare il proxy alla porta 8080 del
+container; HTTPS, dominio e certificati restano a Caddy. Se Caddy gira sullo stesso
+host, pubblica la porta solo in locale (`ports: ["127.0.0.1:8080:8080"]` in compose.yaml)
+e aggiungi al Caddyfile:
+
+```
+audiomaster.example.com {
+    reverse_proxy 127.0.0.1:8080
+}
+```
+
+Se Caddy gira in Docker, togli `ports`, metti il servizio nella rete di Caddy e usa
+`reverse_proxy audiomaster:8080`.
+
+**Dai sorgenti** (in una copia di questo repository):
+
+```bash
+docker compose -f compose.yaml -f compose.build.yaml up -d
 ```
 
 ## Pubblicare su GitHub Pages

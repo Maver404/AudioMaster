@@ -1,0 +1,7 @@
+# Build the image from these sources instead of pulling it (needs the whole checkout):
+#   docker compose -f compose.yaml -f compose.build.yaml up -d
+services:
+  audiomaster:
+    build: .
+    image: audiomaster:local
+    pull_policy: build # every `up` rebuilds from the sources (cached layers), never pulls

@@ -1,9 +1,11 @@
-# docker compose up -d   → http://localhost:8080
+# Only this file is needed: the image is built and published by GitHub Actions.
+#   docker compose up -d                          → http://localhost:8080
+#   docker compose pull && docker compose up -d   (update to the latest version)
+# To build from the sources instead, in a checkout:
+#   docker compose -f compose.yaml -f compose.build.yaml up -d
 services:
   audiomaster:
-    build: .
-    image: audiomaster:latest
-    pull_policy: build # every `up` rebuilds from these sources (cached layers), never pulls
+    image: ghcr.io/maver404/audiomaster:latest
     ports:
       - "8080:8080"
     restart: unless-stopped

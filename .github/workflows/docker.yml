@@ -1,5 +1,7 @@
-# Build the Docker image and smoke-test it with the hardening of compose.yaml (read-only
-# filesystem, no capabilities). Nothing is pushed to a registry.
+# Build the Docker image from the sources and smoke-test it with the hardening of
+# compose.yaml (read-only filesystem, no capabilities). On main, publish it for amd64 and
+# arm64 as ghcr.io/maver404/audiomaster (:latest and :<commit>), then start it the way a
+# server does: only compose.yaml in an empty folder, pulled without logging in.
 name: Docker image
 
 on:
@@ -46,10 +48,11 @@ jobs:
           grep -qi '^x-content-type-options: nosniff' headers.txt
           docker exec am wget -q -O /dev/null http://127.0.0.1:8080/
           docker stop am
-      - name: Compose (built through bake, as recent Docker Compose does)
+      - name: Compose from the sources (built through bake, as recent Docker Compose does)
         shell: bash # -eo pipefail: a failed build fails the step even through tee
         env:
           COMPOSE_BAKE: 'true'
+          COMPOSE_FILE: compose.yaml:compose.build.yaml
         run: |
           docker compose build 2>&1 | tee compose-build.log
           grep -q 'bake definitions' compose-build.log # the build really went through bake
@@ -58,6 +61,45 @@ jobs:
           docker compose down
       - name: Container logs
         if: always()
+        env:
+          COMPOSE_FILE: compose.yaml:compose.build.yaml
         run: |
           docker logs am || true
           docker compose logs || true
+
+  publish:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-compose-action@v1
+        with:
+          version: latest
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # Only COPY runs on the target platform (the page is built on the runner's own), so
+      # arm64 needs no emulation.
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/maver404/audiomaster:latest
+            ghcr.io/maver404/audiomaster:${{ github.sha }}
+      - name: Start it as a server does (only compose.yaml, anonymous pull)
+        run: |
+          docker logout ghcr.io
+          mkdir server && cp compose.yaml server/ && cd server
+          docker compose pull
+          docker compose up -d --wait --wait-timeout 120
+          curl -fsS http://127.0.0.1:8080/ | grep -q '<title>AudioMaster</title>'
+          docker compose down
