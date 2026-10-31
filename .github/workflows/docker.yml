@@ -16,6 +16,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # The newest Buildx and Compose, as on a freshly installed Docker host.
+      - uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker # the engine's own builder: images land in `docker images`, as on a host
+      - uses: docker/setup-compose-action@v1
+        with:
+          version: latest
+      - name: Versions
+        run: |
+          docker version --format 'Engine {{.Server.Version}}'
+          docker buildx version
+          docker compose version
       - name: Build
         run: docker build -t audiomaster:ci .
       - name: Smoke test
@@ -35,9 +47,12 @@ jobs:
           docker exec am wget -q -O /dev/null http://127.0.0.1:8080/
           docker stop am
       - name: Compose (built through bake, as recent Docker Compose does)
+        shell: bash # -eo pipefail: a failed build fails the step even through tee
         env:
           COMPOSE_BAKE: 'true'
         run: |
+          docker compose build 2>&1 | tee compose-build.log
+          grep -q 'bake definitions' compose-build.log # the build really went through bake
           docker compose up -d --wait --wait-timeout 120
           curl -fsS http://127.0.0.1:8080/ | grep -q '<title>AudioMaster</title>'
           docker compose down

@@ -1,14 +1,11 @@
-# Only what the build needs; everything else stays out of the build context.
-# The Dockerfile must stay in: `docker compose` builds through bake, which applies these
-# rules to the Dockerfile too ("failed to read dockerfile" otherwise).
-*
-!Dockerfile
-!.dockerignore
-!package.json
-!package-lock.json
-!index.html
-!src/
-!tools/
-!docker/nginx.conf
+# Keep the build context small. Hidden files and folders (.git, local settings and test
+# files), dependencies, build output, docs and tests stay out; the Dockerfile itself stays
+# in (docker compose builds through bake, which reads it from the context).
+.*
+node_modules
+dist
+docs
+tests
+*.md
 **/.DS_Store
 **/*.log
