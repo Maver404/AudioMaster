@@ -799,19 +799,30 @@ sourceToEdited(editedToSource(e)) = e, and editedToSource(sourceToEdited(s)) = s
 * app.js calls `deps.readMetadata(file)` (src/audio/metadata.js) next to `decodeFile`;
   the result is `tr.meta` (`tr.metaState`: 'none' → 'loading' → 'ready', the promise in
   `tr.metaPromise`). The demo has none.
-* `createMetaBox({ help, keep, onKeepChange })` → `{ el, update(tr), setKeep(on),
+* `createMetaBox({ help, keep, onKeepChange, onEdit })` → `{ el, update(tr), setKeep(on),
   setDisabled(on), relabel(), destroy() }`: update() rebuilds the rows only when the song,
-  its metadata / info or the language changed (a focused link survives app renders); cover (`pickCover`, blob URL used only as `<img src>`, revoked when it
+  its metadata / edits / info or the language changed (a focused link survives app
+  renders); cover (`pickCover`, blob URL used only as `<img src>`, revoked when it
   changes; a click toggles a full-width view), title / artist / album · year, the other
   tags as rows, lyrics and the remaining fields under their original names in folds
   (http(s) values become links, rel="noopener noreferrer"), technical details from the
   decode info. Untagged files and the demo say so. Pure helpers are exported for tests.
 * "Copia copertina e metadati nel master" (`state.exportMeta`, stored in `am.export` as
-  `meta`, default on): exports pass `metadata: tr.meta` (or null) to `encodeWav` /
+  `meta`, default on): exports pass `metadata: effectiveMeta(tr.meta, tr.metaEdits)` (or null) to `encodeWav` /
   `encodeMp3`, which run `prepareExportMetadata` themselves. Not an undo step. The switch
   is shown only when a master would carry something (`carriesMeta`), is locked while an
   export runs, and its value is read once per export; an export waits for a metadata read
   still in progress, and a song removed during the export is left out and named.
+* "Modifica" opens a form over the read-only rows: EDIT_KEYS (title … lyrics, comment
+  and lyrics multi-line), the cover (JPEG / PNG ≤ 16 MB, checked with `sniffImage`;
+  replace or remove) and the extra fields (× leaves one out of the master). Every input
+  is validated (`validateTag`: date, track / disc, BPM, ISRC, length) and, when valid,
+  sent as a patch: app.js keeps `tr.metaEdits = patchEdits(tr.meta, tr.metaEdits, patch)`
+  (immutable; a value back to the file's is no edit; null = none). `effectiveMeta()`
+  merges them for the box and the exporters (editing the date re-derives the year); the
+  file's own metadata is never changed. "Ripristina i dati del file" = `{ reset: true }`.
+  Edits are per song, not undo steps, locked during an export, unavailable for the demo
+  and while the metadata is still being read; switching songs closes the form.
 
 ### Tema (src/ui/theme.js)
 * Skins: auto (follows the host's `data-theme` / prefers-color-scheme), dark, light, fluo,

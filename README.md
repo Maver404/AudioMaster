@@ -30,8 +30,10 @@ is remembered).
    forth through every change to the sound: destination, character, settings, cuts (last
    50 steps).
 8. The **Metadata** box shows the cover art and every tag in the file (title, artist,
-   album, lyrics, links, technical details). By default the master keeps the cover and the
-   tags; switch it off to export a clean file.
+   album, lyrics, links, technical details). **Edit** changes what the master carries:
+   title, artist, album, date, track, genre, comment, lyrics and the other main fields, the
+   cover (JPEG or PNG) and the extra fields; the original file is never touched. By default
+   the master keeps the cover and the tags; switch it off to export a clean file.
 9. **Theme** (top right) switches the look: Automatic, Dark, Light, Fluo Techno, Analog,
    Synthwave or High contrast.
 

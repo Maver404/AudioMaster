@@ -28,8 +28,10 @@ piattaforme. Tutto avviene sul tuo computer: nessun file viene caricato su un se
    indietro o avanti di un passo su ogni modifica al suono: destinazione, carattere,
    regolazioni, tagli (ultimi 50 passi).
 8. Il box **Metadati** mostra la copertina e tutti i tag del file (titolo, artista, album,
-   testo, link, dati tecnici). Di base il master mantiene copertina e tag; disattiva
-   l'opzione per esportare un file pulito.
+   testo, link, dati tecnici). **Modifica** cambia ciò che il master porta con sé: titolo,
+   artista, album, data, traccia, genere, commento, testo e gli altri campi principali, la
+   copertina (JPEG o PNG) e i campi extra; il file originale non viene mai toccato. Di base
+   il master mantiene copertina e tag; disattiva l'opzione per esportare un file pulito.
 9. **Tema** (in alto a destra) cambia l'aspetto: Automatico, Scuro, Chiaro, Fluo Techno,
    Analogico, Synthwave o Alto contrasto.
 

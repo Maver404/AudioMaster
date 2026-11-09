@@ -18,7 +18,7 @@ import { helpButton, advancedHelp, advancedHint, withHelp } from './help.js';
 import { createCutBar, selectionToEdited, clipFileName, cleanName } from './cut.js';
 import { createHistory, labelText, sameValue, undoKeyAllowed, historyKey, COALESCE_MS } from './history.js';
 import { createSkinPicker } from './theme.js';
-import { createMetaBox } from './metabox.js';
+import { createMetaBox, patchEdits, effectiveMeta } from './metabox.js';
 import { fullEdit, isFullEdit, editProblem, snapEdges, keepOnly, removeRange, applyEdit, sliceAudio, editedToSource, sourceToEdited } from '../audio/edit.js';
 
 const DEBOUNCE_MS = 350;
@@ -477,6 +477,13 @@ export function createApp(root, deps) {
       writeStore(LS_EXPORT, { format: state.exportFormat, meta: on });
       metaBox.setKeep(on);
     },
+    // "Modifica": the user's changes to what the active song's master carries.
+    onEdit: (patch) => {
+      const tr = active();
+      if (!tr || tr.demo || tr.metaState === 'loading' || state.exporting) return;
+      tr.metaEdits = patchEdits(tr.meta, tr.metaEdits, patch);
+      renderMeta();
+    },
   });
   ui.exportPanel.after(metaBox.el);
 
@@ -494,6 +501,7 @@ export function createApp(root, deps) {
       info: null,
       meta: null, // readMetadata() result: tags, pictures (src/audio/metadata.js)
       metaState: 'none', // 'loading' while it is read, 'ready' once done
+      metaEdits: null, // the user's changes (metabox.js patchEdits), applied on export
       audio: null, // what is mastered: the decoded song, or its edit (cut tool)
       source: null, // the decoded song, kept once the song is edited
       edits: null, // edit list of kept source frames (src/audio/edit.js); null = whole song
@@ -867,7 +875,7 @@ export function createApp(root, deps) {
       // A song removed meanwhile is not saved, as during the render wait (ensureRendered).
       if (!state.tracks.includes(tr)) throw Object.assign(new Error('removed'), { code: 'removed' });
     }
-    return tr.meta || null;
+    return effectiveMeta(tr.meta || null, tr.metaEdits || null);
   }
 
   async function loadDemo() {

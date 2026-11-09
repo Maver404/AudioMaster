@@ -2658,6 +2658,142 @@ button.meta-cover {
   border-top: 1px solid var(--line);
 }
 
+/* Metadati: edit form ("Modifica") */
+
+.meta-form,
+.meta-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.meta-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 10px;
+}
+
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.meta-field-long {
+  grid-column: 1 / -1;
+}
+
+.meta-field label,
+.meta-sub {
+  font-size: 12px;
+  color: var(--fg-2);
+}
+
+.meta-input {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r);
+  background: var(--well);
+  color: var(--fg);
+  font-family: var(--font-ui);
+  font-size: 13px;
+}
+
+.meta-input-long {
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.meta-input:focus-visible {
+  outline-offset: 0;
+}
+
+.meta-input[aria-invalid='true'] {
+  border-color: var(--crit);
+  box-shadow: inset 0 0 0 1px var(--crit);
+}
+
+.meta-err {
+  font-size: 12px;
+  color: var(--crit);
+}
+
+.meta-warn {
+  padding: 6px 8px;
+  border-left: 3px solid var(--warn);
+  border-radius: 3px;
+  background: var(--well);
+  color: var(--fg);
+}
+
+.meta-cover-edit,
+.meta-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.meta-extra-edit {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-extra-edit li {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr) auto;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.meta-x-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-3);
+  overflow-wrap: anywhere;
+}
+
+.meta-x-value {
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+
+.meta-x {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: transparent;
+  color: var(--fg-2);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.meta-x:hover {
+  color: var(--crit);
+  border-color: var(--crit);
+}
+
+@media (pointer: coarse) {
+  .meta-x {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 /* ---------- Spectrum ---------- */
 
 .legend {

@@ -54,6 +54,7 @@ export const HELP_TOPICS = {
   history: { label: () => `${t('history.undo')} / ${t('history.redo')}` },
   meta: { label: 'meta.title' },
   'meta.keep': { label: 'meta.keep' },
+  'meta.edit': { label: 'meta.edit' },
   // Cut tool (cut.js passes its own label keys).
   cut: { label: 'cut.toggle' },
   'cut.zoom': { label: 'cut.viewLabel' },

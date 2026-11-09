@@ -284,6 +284,16 @@ async function readRegion(src, off, len, warnings, what) {
 // ---------------------------------------------------------------------------------------
 // pictures
 
+/**
+ * The image type and size from its header (JPEG, PNG, GIF, BMP, WebP), without decoding;
+ * null for anything else. Used to check a cover the user picks before it goes into a tag.
+ * @param {Uint8Array} bytes
+ * @returns {{ mime: string, width: number|null, height: number|null }|null}
+ */
+export function sniffImage(bytes) {
+  return imageInfo(bytes);
+}
+
 function imageInfo(b) {
   if (!b || b.length < 8) return null;
   if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) {
